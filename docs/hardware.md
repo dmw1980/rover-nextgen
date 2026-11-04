@@ -1,75 +1,56 @@
-# XMW Rover NextGen Hardware
+# Rover Hardware Inventory
+
+This document records the rover's current hardware by subsystem. Pin
+assignments and wiring are documented separately.
 
 ## Compute
 
-- Raspberry Pi 4B
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| 1 | Single-board computer | Raspberry Pi 4B | Rover compute platform |
 
-## Cameras
+## Drive and wheel odometry
 
-### Front Camera
-- Trust Trino HD Webcam
-- USB
-- 1280x720
+The rover uses individual wheel control, with one BTS7960 motor driver and one
+SN04-N wheel odometry sensor assigned to each wheel.
 
-### Rear Camera
-- Trust Trino HD Webcam
-- USB
-- 1280x720
+| Wheel | Position | Motor driver | Odometry sensor |
+|---|---|---|---|
+| FL | Front left | BTS7960 | SN04-N |
+| FR | Front right | BTS7960 | SN04-N |
+| RL | Rear left | BTS7960 | SN04-N |
+| RR | Rear right | BTS7960 | SN04-N |
 
-## Controller
+## Navigation and ranging
 
-- LATEC PS4 Controller
-- Bluetooth
-- 6-Axis IMU
-- Touchpad
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| 1 | 9-DOF IMU | BNO085 | Rover orientation and motion sensing |
+| 1 | LiDAR | Slamtec RPLIDAR C1 | Ranging for mapping and obstacle detection |
+| 4 | Time-of-flight distance sensors | VL53L1X | Short-range distance sensing |
 
-## Motion Controller
+## Environmental and analog sensing
 
-- PCA9685 PWM Controller
-- BTS7960 Motor Driver
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| 1 | Environmental sensor | BME280; temperature, humidity, and pressure | Environmental measurements |
+| 1 | Analog-to-digital converter | ADS1115; 16-bit, 4-channel | Reading analog sensor signals |
 
-## Navigation
+## Video
 
-### Rover IMU
-- BNO085
-- 9 DOF
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| 2 | USB webcam | Trust Trino HD; 1280 × 720 | Front and rear video capture |
 
-### Lidar
-- Slamtec RPLIDAR C1
+## Operator input and control
 
-## Distance Sensors
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| 1 | Game controller | LATEC PS4 Controller; Bluetooth, 6-axis IMU, and touchpad | Manual rover control |
+| 1 | PWM controller | PCA9685 | PWM signal generation |
 
-### ToF Sensors
-- 4x VL53L0X / VL53L1X
+## Switched outputs
 
-## Environment
-
-### BME280
-- Temperature
-- Humidity
-- Pressure
-
-## Analog Inputs
-
-### ADS1115
-- 16 Bit
-- 4 Channel ADC
-
-## Actuators
-
-### MOSFET Outputs
-- IRLZ44N Modules
-- LED Lighting
-- Future Expansion
-
-## Planned
-
-- Battery Monitoring
-- Wheel Encoders
-
-## Unknown
-
-- I2C Expander Type
-- Battery Type
-- Motor Voltage
-- Inductive Sensor Type
+| Qty. | Component | Model / details | Role |
+|---:|---|---|---|
+| As required | MOSFET modules | IRLZ44N | Switched outputs, including LED lighting |
