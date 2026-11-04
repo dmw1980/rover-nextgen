@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyc
+*$py.class
+
+# Virtual environments
+.venv/
+**/.venv/
+venv/
+env/
+ENV/
+
+# Environment variables and local configuration
+.env
+.env.*
+!.env.example
+
+# Test and analysis output
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Build and package artifacts
+build/
+dist/
+*.egg-info/
+
+# Runtime output
+*.log
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
