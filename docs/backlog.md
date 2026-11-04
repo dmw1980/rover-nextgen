@@ -115,3 +115,52 @@ when its navigation inputs or safety conditions are invalid.
 
 **Completion:** The rover can attempt a safe return to its configured home
 location and report when it cannot complete the return.
+
+## Lighting System
+
+The lighting system is documented as logical outputs and rover status states.
+The patterns below specify visual behavior only. GPIO pins, PCA9685 channels,
+and wiring are not assigned here.
+
+### Logical outputs
+
+| Group | Logical signals | Purpose |
+|---|---|---|
+| Front RGBW | `FRONT_R`, `FRONT_G`, `FRONT_B`, `FRONT_W` | Red, green, blue, and white front lighting channels |
+| Rear RGBW | `REAR_R`, `REAR_G`, `REAR_B`, `REAR_W` | Red, green, blue, and white rear lighting channels |
+| Reserved | `AUX_1`, `AUX_2` | Reserved; no physical assignment yet |
+
+### Lighting patterns
+
+| State | Front | Rear | Additional details |
+|---|---|---|---|
+| `Boot` | Blue, slow pulse | Blue, slow pulse | |
+| `Ready` | White at 50% | White at 20% | |
+| `Manual` | White at 100% | Red at 30% | |
+| `Autonomous` | White at 70% with green status indication | Green at 60% | |
+| `Return Home` | White at 70% | Cyan, slow pulse | |
+| `Obstacle Warning` | Yellow, blinking | Yellow, blinking | Blink frequency: 2 Hz |
+| `Low Battery` | Orange at 50% | Orange at 50% | Suggested threshold: 20% |
+| `Critical Battery` | Red, blinking | Red, blinking | Blink frequency: 2 Hz; suggested threshold: 10% |
+| `Charging` | Blue, slow pulse | Blue, slow pulse | |
+| `WiFi Lost` | Magenta, blinking | Magenta, blinking | Blink frequency: 1 Hz |
+| `Sensor Fault` | Alternate red and yellow | Alternate red and yellow | Pattern frequency: 1 Hz |
+| `Emergency Stop` | Solid red at 100% | Solid red at 100% | Highest priority; overrides every other lighting state |
+
+### State priority
+
+When multiple lighting states apply, use this priority order from highest to
+lowest:
+
+1. `Emergency Stop`
+2. `Critical Battery`
+3. `Sensor Fault`
+4. `WiFi Lost`
+5. `Obstacle Warning`
+6. `Return Home`
+7. `Charging`
+8. `Low Battery`
+9. `Autonomous`
+10. `Manual`
+11. `Ready`
+12. `Boot`
