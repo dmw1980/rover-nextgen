@@ -110,9 +110,26 @@ class ControllerHardware:
 
 @dataclass(frozen=True, slots=True)
 class SwitchedOutputHardware:
-    """MOSFET module type used for switched rover outputs."""
+    """MOSFET modules and logical lighting outputs; no pin mapping is implied."""
 
     mosfet_module_model: str
+    quantity: int
+    front_rgbw_outputs: tuple[str, ...]
+    rear_rgbw_outputs: tuple[str, ...]
+    reserved_outputs: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not self.mosfet_module_model.strip():
+            raise ValueError("MOSFET module model must not be empty.")
+        if self.quantity != 10:
+            raise ValueError("Lighting inventory must contain ten MOSFET modules.")
+        if len(self.front_rgbw_outputs) != 4 or len(self.rear_rgbw_outputs) != 4:
+            raise ValueError("Front and rear lighting must each define four RGBW outputs.")
+        if len(self.reserved_outputs) != 2:
+            raise ValueError("Lighting inventory must define two reserved outputs.")
+        outputs = self.front_rgbw_outputs + self.rear_rgbw_outputs + self.reserved_outputs
+        if len(set(outputs)) != self.quantity:
+            raise ValueError("Each MOSFET module must have one unique logical output.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -172,5 +189,11 @@ HARDWARE = RoverHardware(
         has_six_axis_imu=True,
         has_touchpad=True,
     ),
-    switched_outputs=SwitchedOutputHardware(mosfet_module_model="IRLZ44N"),
+    switched_outputs=SwitchedOutputHardware(
+        mosfet_module_model="IRLZ44N",
+        quantity=10,
+        front_rgbw_outputs=("FRONT_R", "FRONT_G", "FRONT_B", "FRONT_W"),
+        rear_rgbw_outputs=("REAR_R", "REAR_G", "REAR_B", "REAR_W"),
+        reserved_outputs=("AUX_1", "AUX_2"),
+    ),
 )

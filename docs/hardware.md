@@ -53,4 +53,15 @@ SN04-N wheel odometry sensor assigned to each wheel.
 
 | Qty. | Component | Model / details | Role |
 |---:|---|---|---|
-| As required | MOSFET modules | IRLZ44N | Switched outputs, including LED lighting |
+| 10 | MOSFET modules | IRLZ44N | Front/rear RGBW lighting and reserved auxiliary outputs |
+
+### Lighting outputs
+
+| Group | Logical outputs |
+|---|---|
+| Front RGBW | `FRONT_R`, `FRONT_G`, `FRONT_B`, `FRONT_W` |
+| Rear RGBW | `REAR_R`, `REAR_G`, `REAR_B`, `REAR_W` |
+| Reserved | `AUX_1`, `AUX_2` (no physical assignment yet) |
+
+These are logical inventory names only. No GPIO mappings or PCA9685 channel
+assignments are specified here.
