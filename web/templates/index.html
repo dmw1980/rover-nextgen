@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>XMW Rover NextGen</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">XMW Rover NextGen</h1>
+    <ul class="status-bar" aria-label="Session status">
+      <li class="status-item">
+        <span id="connection-indicator" class="indicator indicator--offline" aria-hidden="true"></span>
+        <span id="connection-text" role="status">Disconnected</span>
+      </li>
+      <li class="status-item">Control source: <strong id="control-source">WEB</strong></li>
+      <li class="status-item">Speed mode: <strong id="header-speed-mode">LOW</strong></li>
+    </ul>
+  </header>
+
+  <p class="sim-banner">Simulation mode: no rover hardware is connected or controlled.</p>
+
+  <section class="estop-panel" aria-labelledby="estop-heading">
+    <h2 id="estop-heading" class="visually-hidden">Emergency stop</h2>
+    <button id="estop-button" class="btn btn-estop" type="button">
+      E-STOP <span class="btn-hint">(Esc)</span>
+    </button>
+    <div class="estop-status">
+      <p id="estop-status-text" class="estop-state" role="status">Emergency stop is not active.</p>
+      <label class="estop-confirm">
+        <input id="estop-confirm" type="checkbox" disabled>
+        <span>The area is clear and driving may be re-enabled</span>
+      </label>
+      <button id="estop-clear-button" class="btn btn-clear" type="button" disabled>Clear E-STOP</button>
+      <p class="hint">Clearing the E-STOP does not resume movement.</p>
+    </div>
+  </section>
+
+  <main class="dashboard">
+    <section class="panel camera-panel" aria-labelledby="camera-heading">
+      <div class="panel-head">
+        <h2 id="camera-heading">Cameras</h2>
+        <div class="segmented" role="group" aria-label="Camera layout">
+          <button class="seg-btn" type="button" data-camera-view="front" aria-pressed="true">Front</button>
+          <button class="seg-btn" type="button" data-camera-view="rear" aria-pressed="false">Rear</button>
+          <button class="seg-btn" type="button" data-camera-view="split" aria-pressed="false">Split</button>
+          <button class="seg-btn" type="button" data-camera-view="pip" aria-pressed="false">Picture-in-Picture</button>
+        </div>
+      </div>
+      <div id="camera-grid" class="camera-grid" data-view="front">
+        <figure class="camera-tile" data-camera="front">
+          <div class="camera-placeholder">
+            <strong>Front camera</strong>
+            <span>Camera streaming not connected</span>
+          </div>
+        </figure>
+        <figure class="camera-tile" data-camera="rear">
+          <div class="camera-placeholder">
+            <strong>Rear camera</strong>
+            <span>Camera streaming not connected</span>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="panel drive-panel" aria-labelledby="drive-heading">
+      <h2 id="drive-heading">Drive</h2>
+
+      <div class="speed-mode" role="group" aria-label="Speed mode">
+        <button class="seg-btn" type="button" data-speed-mode="LOW" aria-pressed="true">LOW <small>max 40%</small></button>
+        <button class="seg-btn" type="button" data-speed-mode="HIGH" aria-pressed="false">HIGH <small>max 100%</small></button>
+      </div>
+
+      <div class="drive-controls">
+        <div class="joystick-wrap">
+          <div id="joystick" class="joystick" role="group"
+               aria-label="Virtual joystick. Drag to drive, release to stop. Use the direction buttons for keyboard control.">
+            <div class="joystick-base"></div>
+            <div id="joystick-knob" class="joystick-knob"></div>
+          </div>
+          <p class="readout" aria-live="off">
+            X <output id="joy-x">0.00</output>
+            Y <output id="joy-y">0.00</output>
+          </p>
+        </div>
+
+        <div class="dpad" role="group" aria-label="Direction buttons (hold to drive)">
+          <button class="btn btn-dir dpad-forward" type="button" data-direction="forward">Forward</button>
+          <button class="btn btn-dir dpad-left" type="button" data-direction="left">Left</button>
+          <button id="stop-button" class="btn btn-stop dpad-stop" type="button">Stop</button>
+          <button class="btn btn-dir dpad-right" type="button" data-direction="right">Right</button>
+          <button class="btn btn-dir dpad-reverse" type="button" data-direction="reverse">Reverse</button>
+        </div>
+      </div>
+      <p class="hint">Movement buttons are hold-to-drive. Releasing, leaving the control, or hiding this page stops the rover.</p>
+    </section>
+
+    <section class="panel telemetry-panel" aria-labelledby="telemetry-heading">
+      <h2 id="telemetry-heading">Telemetry</h2>
+      <dl class="cards">
+        <div class="card"><dt>Rover mode</dt><dd id="t-mode">-</dd></div>
+        <div class="card"><dt>Left drive command</dt><dd id="t-left">-</dd></div>
+        <div class="card"><dt>Right drive command</dt><dd id="t-right">-</dd></div>
+        <div class="card"><dt>FL wheel command</dt><dd id="t-fl">-</dd></div>
+        <div class="card"><dt>FR wheel command</dt><dd id="t-fr">-</dd></div>
+        <div class="card"><dt>RL wheel command</dt><dd id="t-rl">-</dd></div>
+        <div class="card"><dt>RR wheel command</dt><dd id="t-rr">-</dd></div>
+        <div class="card"><dt>Emergency stop</dt><dd id="t-estop">-</dd></div>
+        <div class="card"><dt>Watchdog</dt><dd id="t-watchdog">-</dd></div>
+        <div class="card"><dt>Battery</dt><dd id="t-battery">-</dd></div>
+        <div class="card"><dt>IMU</dt><dd id="t-imu">-</dd></div>
+        <div class="card"><dt>LiDAR</dt><dd id="t-lidar">-</dd></div>
+        <div class="card"><dt>Front camera</dt><dd id="t-front-camera">-</dd></div>
+        <div class="card"><dt>Rear camera</dt><dd id="t-rear-camera">-</dd></div>
+        <div class="card"><dt>Connection latency</dt><dd id="t-latency">-</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel lighting-panel" aria-labelledby="lighting-heading">
+      <h2 id="lighting-heading">Lighting states</h2>
+      <p class="hint">Informational only. Lighting hardware is not controlled from this GUI; the highlighted state is the one implied by this session.</p>
+      <ul id="lighting-list" class="lighting-list">
+        <li data-lighting="Boot"><span class="l-name">Boot</span><span class="l-pattern">Front and rear: blue, slow pulse</span></li>
+        <li data-lighting="Ready"><span class="l-name">Ready</span><span class="l-pattern">Front: white 50%. Rear: white 20%</span></li>
+        <li data-lighting="Manual"><span class="l-name">Manual</span><span class="l-pattern">Front: white 100%. Rear: red 30%</span></li>
+        <li data-lighting="Autonomous"><span class="l-name">Autonomous</span><span class="l-pattern">Front: white 70%, green status. Rear: green 60%</span></li>
+        <li data-lighting="Return Home"><span class="l-name">Return Home</span><span class="l-pattern">Front: white 70%. Rear: cyan, slow pulse</span></li>
+        <li data-lighting="Obstacle Warning"><span class="l-name">Obstacle Warning</span><span class="l-pattern">Yellow, blinking at 2 Hz</span></li>
+        <li data-lighting="Low Battery"><span class="l-name">Low Battery</span><span class="l-pattern">Orange at 50%</span></li>
+        <li data-lighting="Critical Battery"><span class="l-name">Critical Battery</span><span class="l-pattern">Red, blinking at 2 Hz</span></li>
+        <li data-lighting="Charging"><span class="l-name">Charging</span><span class="l-pattern">Blue, slow pulse</span></li>
+        <li data-lighting="WiFi Lost"><span class="l-name">WiFi Lost</span><span class="l-pattern">Magenta, blinking at 1 Hz</span></li>
+        <li data-lighting="Sensor Fault"><span class="l-name">Sensor Fault</span><span class="l-pattern">Alternating red and yellow at 1 Hz</span></li>
+        <li data-lighting="Emergency Stop"><span class="l-name">Emergency Stop</span><span class="l-pattern">Solid red at 100%</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/vendor/socket.io.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
