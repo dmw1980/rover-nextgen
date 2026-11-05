@@ -20,6 +20,33 @@ class CameraPosition(str, Enum):
     REAR = "rear"
 
 
+I2C_ADDRESSES: dict[str, int] = {
+    "BNO085": 0x4A,
+    "ADS1115": 0x48,
+    "BME280_PRIMARY": 0x76,
+    "BME280_FALLBACK": 0x77,
+    "VL53L1X_DEFAULT": 0x29,
+}
+
+PCA9685_MOTOR_CHANNELS: dict[WheelPosition, tuple[int, int]] = {
+    WheelPosition.RR: (0, 1),
+    WheelPosition.FR: (2, 3),
+    WheelPosition.RL: (4, 5),
+    WheelPosition.FL: (6, 7),
+}
+
+PCA9685_LIGHTING_CHANNELS: dict[str, int] = {
+    "FRONT_R": 8,
+    "FRONT_G": 9,
+    "FRONT_B": 10,
+    "FRONT_W": 11,
+    "REAR_R": 12,
+    "REAR_G": 13,
+    "REAR_B": 14,
+    "REAR_W": 15,
+}
+
+
 @dataclass(frozen=True, slots=True)
 class SensorHardware:
     """Model and documented quantity for a sensor type."""
